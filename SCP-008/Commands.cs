@@ -15,6 +15,7 @@ namespace SCP008
 			{
 				case "infect":
 				{
+					ev.Allow = false;
 					if (args.Length < 2)
 					{
 						ev.Sender.RAMessage("You must supply a player named.", false);
@@ -40,6 +41,7 @@ namespace SCP008
 				}
 				case "cure":
 				{
+					ev.Allow = false;
 					if (args.Length < 2)
 					{
 						ev.Sender.RAMessage("You must supply a player named.", false);

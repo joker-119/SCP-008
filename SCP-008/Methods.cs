@@ -21,21 +21,35 @@ namespace SCP008
 
 		private IEnumerator<float> DoInfectionTimer(ReferenceHub player)
 		{
-			Broadcast broadcast = player.gameObject.GetComponent<Broadcast>();
 			for (int i = 0; i < plugin.InfectionLength; i++)
 			{
 				if (!plugin.InfectedPlayers.Contains(player))
 					yield break;
 
-				broadcast.CallRpcClearElements();
-				broadcast.CallRpcAddElement($"You are infected with SCP-008. The infection will take over in {plugin.InfectionLength - 1} seconds!", 1, false);
+				player.gameObject.GetComponent<Broadcast>().RpcClearElements();
+				player.Broadcast(1, $"You are infected with SCP-008. The infection will take over in {plugin.InfectionLength - i} seconds!");
 				yield return Timing.WaitForSeconds(1f);
 			}
 
-			player.characterClassManager.NetworkCurClass = RoleType.Scp0492;
+			GameObject gameObject = player.gameObject;
+			Vector3 pos = gameObject.transform.position;
+
+			Timing.RunCoroutine(TurnIntoZombie(player, pos));
+
+			yield return Timing.WaitForSeconds(0.6f);
+			
 			foreach (ReferenceHub hub in EXILED.Plugin.GetHubs())
 				if (Vector3.Distance(hub.gameObject.transform.position, player.gameObject.transform.position) < 10f && hub.characterClassManager.IsHuman())
 					InfectPlayer(hub);
+			CurePlayer(player);
+		}
+		
+		public IEnumerator<float> TurnIntoZombie(ReferenceHub player, Vector3 position)
+		{
+			yield return Timing.WaitForSeconds(0.3f);
+			player.characterClassManager.SetClassIDAdv(RoleType.Scp0492, true);
+			yield return Timing.WaitForSeconds(1f);
+			player.plyMovementSync.OverridePosition(position, player.gameObject.transform.rotation.y);
 		}
 
 		public void CurePlayer(ReferenceHub player)

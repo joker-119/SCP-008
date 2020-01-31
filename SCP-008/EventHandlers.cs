@@ -24,6 +24,18 @@ namespace SCP008
 
 		public void OnPlayerHurt(ref PlayerHurtEvent ev)
 		{
+			if (ev.Info.Amount >= ev.Player.playerStats.health)
+				if (plugin.InfectedPlayers.Contains(ev.Player))
+				{
+					plugin.Functions.CurePlayer(ev.Player);
+					if (ev.Player.characterClassManager.CurClass != RoleType.Scp0492)
+					{
+						Vector3 pos = ev.Player.gameObject.transform.position;
+						Timing.RunCoroutine(plugin.Functions.TurnIntoZombie(ev.Player, new Vector3(pos.x, pos.y, pos.z)));
+						ev.Info = new PlayerStats.HitInfo(0f, ev.Info.Attacker, ev.Info.GetDamageType(), ev.Info.PlyId);
+					}
+				}
+			
 			if (ev.Attacker == null || string.IsNullOrEmpty(ev.Attacker.characterClassManager.UserId))
 				return;
 			
@@ -34,19 +46,7 @@ namespace SCP008
 
 		public void OnPlayerDeath(ref PlayerDeathEvent ev)
 		{
-			if (plugin.InfectedPlayers.Contains(ev.Player))
-			{
-				plugin.Functions.CurePlayer(ev.Player);
-				Timing.RunCoroutine(TurnIntoZombie(ev.Player, ev.Player.gameObject.transform.position));
-			}
-		}
-
-		private IEnumerator<float> TurnIntoZombie(ReferenceHub player, Vector3 position)
-		{
-			yield return Timing.WaitForSeconds(0.3f);
-			player.characterClassManager.SetPlayersClass(RoleType.Scp0492, player.gameObject, true);
-			yield return Timing.WaitForSeconds(0.3f);
-			player.plyMovementSync.OverridePosition(position, player.gameObject.transform.rotation.y);
+			
 		}
 
 		public void OnUseMedicalItem(MedicalItemEvent ev)
