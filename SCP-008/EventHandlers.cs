@@ -28,7 +28,7 @@ namespace SCP008
 				if (plugin.InfectedPlayers.Contains(ev.Player))
 				{
 					plugin.Functions.CurePlayer(ev.Player);
-					if (ev.Player.characterClassManager.CurClass != RoleType.Scp0492)
+					if (ev.Player.characterClassManager.CurClass != RoleType.Scp0492 && plugin.TurnInfectedOnDeath)
 					{
 						Vector3 pos = ev.Player.gameObject.transform.position;
 						Timing.RunCoroutine(plugin.Functions.TurnIntoZombie(ev.Player, new Vector3(pos.x, pos.y, pos.z)));
@@ -39,7 +39,7 @@ namespace SCP008
 			if (ev.Attacker == null || string.IsNullOrEmpty(ev.Attacker.characterClassManager.UserId))
 				return;
 			
-			if (ev.Attacker.characterClassManager.CurClass == RoleType.Scp0492)
+			if (ev.Attacker.characterClassManager.CurClass == RoleType.Scp0492 && Plugin.GetTeam(ev.Attacker.characterClassManager.CurClass) != Team.SCP)
 				if (plugin.Gen.Next(100) < plugin.InfectionChance)
 					plugin.Functions.InfectPlayer(ev.Player);
 		}

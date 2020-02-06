@@ -39,24 +39,32 @@ namespace SCP008
 			yield return Timing.WaitForSeconds(0.6f);
 			
 			foreach (ReferenceHub hub in EXILED.Plugin.GetHubs())
-				if (Vector3.Distance(hub.gameObject.transform.position, player.gameObject.transform.position) < 10f && hub.characterClassManager.IsHuman())
+				if (Vector3.Distance(hub.gameObject.transform.position, player.gameObject.transform.position) < 10f && hub.characterClassManager.IsHuman() && hub != player)
 					InfectPlayer(hub);
 			CurePlayer(player);
 		}
 		
 		public IEnumerator<float> TurnIntoZombie(ReferenceHub player, Vector3 position)
 		{
+			CurePlayer(player);
+			if (player.characterClassManager.CurClass == RoleType.Scp0492)
+			{
+				yield break;
+			}
 			yield return Timing.WaitForSeconds(0.3f);
-			player.characterClassManager.SetClassIDAdv(RoleType.Scp0492, true);
+			CurePlayer(player);
+			player.characterClassManager.SetClassIDAdv(RoleType.Scp0492, false);
 			yield return Timing.WaitForSeconds(1f);
+			CurePlayer(player);
+			player.playerStats.health = player.playerStats.maxHP;
 			player.plyMovementSync.OverridePosition(position, player.gameObject.transform.rotation.y);
+			CurePlayer(player);
 		}
 
 		public void CurePlayer(ReferenceHub player)
 		{
-			if (!plugin.InfectedPlayers.Contains(player))
-				return;
-			plugin.InfectedPlayers.Remove(player);
+			if (plugin.InfectedPlayers.Contains(player))
+				plugin.InfectedPlayers.Remove(player);
 
 			Timing.KillCoroutines($"{player.characterClassManager.UserId}");
 		}

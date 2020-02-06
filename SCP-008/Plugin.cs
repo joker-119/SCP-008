@@ -14,6 +14,7 @@ namespace SCP008
 		public bool Enabled;
 		public float InfectionLength;
 		public float InfectionChance;
+		public bool TurnInfectedOnDeath;
 		
 		public List<ReferenceHub> InfectedPlayers = new List<ReferenceHub>();
 		public List<CoroutineHandle> Coroutines = new List<CoroutineHandle>();
@@ -62,6 +63,7 @@ namespace SCP008
 			Enabled = Config.GetBool("008_enabled", true);
 			InfectionChance = Config.GetFloat("008_infection_chance", 40f);
 			InfectionLength = Config.GetFloat("008_infection_length", 30f);
+			TurnInfectedOnDeath = Config.GetBool("008_turn_on_death", true);
 		}
 	}
 }
