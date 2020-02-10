@@ -1,4 +1,5 @@
 using EXILED;
+using EXILED.Extensions;
 
 namespace SCP008
 {

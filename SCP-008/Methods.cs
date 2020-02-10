@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using EXILED;
+using EXILED.Extensions;
 using MEC;
 using UnityEngine;
 
@@ -13,18 +14,32 @@ namespace SCP008
 		public void InfectPlayer(ReferenceHub player)
 		{
 			if (plugin.InfectedPlayers.Contains(player))
+			{
+				Plugin.Debug($"{player.nicknameSync.MyNick} already infected.");
 				return;
+			}
+
+			if (player.characterClassManager.IsAnyScp())
+			{
+				Plugin.Debug($"{player.nicknameSync.MyNick} is an SCP.");
+				return;
+			}
 			plugin.InfectedPlayers.Add(player);
 
+			Plugin.Debug($"{player.nicknameSync.MyNick} infected.");
 			plugin.Coroutines.Add(Timing.RunCoroutine(DoInfectionTimer(player), $"{player.characterClassManager.UserId}"));
 		}
 
 		private IEnumerator<float> DoInfectionTimer(ReferenceHub player)
 		{
+			Plugin.Debug($"Infection timer for {player.nicknameSync.MyNick} started.");
 			for (int i = 0; i < plugin.InfectionLength; i++)
 			{
 				if (!plugin.InfectedPlayers.Contains(player))
+				{
+					Plugin.Debug($"{player.nicknameSync.MyNick} is no longer on infected list, halting timer.");
 					yield break;
+				}
 
 				player.gameObject.GetComponent<Broadcast>().RpcClearElements();
 				player.Broadcast(1, $"You are infected with SCP-008. The infection will take over in {plugin.InfectionLength - i} seconds!");
@@ -54,7 +69,7 @@ namespace SCP008
 			yield return Timing.WaitForSeconds(0.3f);
 			CurePlayer(player);
 			player.characterClassManager.SetClassIDAdv(RoleType.Scp0492, false);
-			yield return Timing.WaitForSeconds(1f);
+			yield return Timing.WaitForSeconds(2.5f);
 			CurePlayer(player);
 			player.playerStats.health = player.playerStats.maxHP;
 			player.plyMovementSync.OverridePosition(position, player.gameObject.transform.rotation.y);

@@ -61,7 +61,6 @@
     <ItemGroup>
         <Compile Include="Commands.cs" />
         <Compile Include="EventHandlers.cs" />
-        <Compile Include="Extensions.cs" />
         <Compile Include="Methods.cs" />
         <Compile Include="Plugin.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
