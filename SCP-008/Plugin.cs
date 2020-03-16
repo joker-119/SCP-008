@@ -16,7 +16,7 @@ namespace SCP008
 		public float InfectionChance;
 		public bool TurnInfectedOnDeath;
 		
-		public List<ReferenceHub> InfectedPlayers = new List<ReferenceHub>();
+		public HashSet<ReferenceHub> InfectedPlayers = new HashSet<ReferenceHub>();
 		public List<CoroutineHandle> Coroutines = new List<CoroutineHandle>();
 		public Random Gen = new Random();
 
@@ -33,7 +33,6 @@ namespace SCP008
 			Events.WaitingForPlayersEvent += EventHandlers.OnWaitingForPlayers;
 			Events.RoundEndEvent += EventHandlers.OnRoundEnd;
 			Events.PlayerHurtEvent += EventHandlers.OnPlayerHurt;
-			Events.PlayerDeathEvent += EventHandlers.OnPlayerDeath;
 			Events.UseMedicalItemEvent += EventHandlers.OnUseMedicalItem;
 			Events.RemoteAdminCommandEvent += Commands.OnRaCommand;
 		}
@@ -42,7 +41,6 @@ namespace SCP008
 		{
 			Events.WaitingForPlayersEvent -= EventHandlers.OnWaitingForPlayers;
 			Events.PlayerHurtEvent -= EventHandlers.OnPlayerHurt;
-			Events.PlayerDeathEvent -= EventHandlers.OnPlayerDeath;
 			Events.UseMedicalItemEvent -= EventHandlers.OnUseMedicalItem;
 			Events.RoundEndEvent -= EventHandlers.OnRoundEnd;
 			Events.RemoteAdminCommandEvent -= Commands.OnRaCommand;

@@ -49,6 +49,7 @@ namespace SCP008
 			GameObject gameObject = player.gameObject;
 			Vector3 pos = gameObject.transform.position;
 
+			player.inventory.ServerDropAll();
 			Timing.RunCoroutine(TurnIntoZombie(player, pos));
 
 			yield return Timing.WaitForSeconds(0.6f);
@@ -61,16 +62,13 @@ namespace SCP008
 		
 		public IEnumerator<float> TurnIntoZombie(ReferenceHub player, Vector3 position)
 		{
-			CurePlayer(player);
 			if (player.characterClassManager.CurClass == RoleType.Scp0492)
 			{
 				yield break;
 			}
 			yield return Timing.WaitForSeconds(0.3f);
-			CurePlayer(player);
 			player.characterClassManager.SetClassIDAdv(RoleType.Scp0492, false);
 			yield return Timing.WaitForSeconds(2.5f);
-			CurePlayer(player);
 			player.playerStats.health = player.playerStats.maxHP;
 			player.plyMovementSync.OverridePosition(position, player.gameObject.transform.rotation.y);
 			CurePlayer(player);

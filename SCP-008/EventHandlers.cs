@@ -33,7 +33,9 @@ namespace SCP008
 					{
 						Vector3 pos = ev.Player.gameObject.transform.position;
 						Timing.RunCoroutine(plugin.Functions.TurnIntoZombie(ev.Player, new Vector3(pos.x, pos.y, pos.z)));
+						ev.Player.inventory.ServerDropAll();
 						ev.Info = new PlayerStats.HitInfo(0f, ev.Info.Attacker, ev.Info.GetDamageType(), ev.Info.PlyId);
+						return;
 					}
 				}
 
@@ -53,11 +55,6 @@ namespace SCP008
 					plugin.Functions.InfectPlayer(ev.Player);
 				}
 			}
-		}
-
-		public void OnPlayerDeath(ref PlayerDeathEvent ev)
-		{
-			
 		}
 
 		public void OnUseMedicalItem(MedicalItemEvent ev)
