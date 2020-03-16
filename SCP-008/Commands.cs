@@ -23,7 +23,7 @@ namespace SCP008
 						return;
 					}
 
-					ReferenceHub player = Plugin.GetPlayer(args[1]);
+					ReferenceHub player = Player.GetPlayer(args[1]);
 					if (player == null)
 					{
 						ev.Sender.RAMessage($"Player not found: {args[1]}", false);
@@ -49,7 +49,7 @@ namespace SCP008
 						return;
 					}
 
-					ReferenceHub player = Plugin.GetPlayer(args[1]);
+					ReferenceHub player = Player.GetPlayer(args[1]);
 					if (player == null)
 					{
 						ev.Sender.RAMessage($"Player not found: {args[1]}", false);

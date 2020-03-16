@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using EXILED;
+using EXILED.Extensions;
 using MEC;
 using UnityEngine;
 
@@ -38,17 +39,17 @@ namespace SCP008
 
 			if (ev.Attacker == null || string.IsNullOrEmpty(ev.Attacker.characterClassManager.UserId))
 			{
-				Plugin.Debug("Attacker could not be found.");
+				Log.Debug("Attacker could not be found.");
 				return;
 			}
 
-			if (ev.Attacker.characterClassManager.CurClass == RoleType.Scp0492 && Plugin.GetTeam(ev.Player.characterClassManager.CurClass) != Team.SCP)
+			if (ev.Attacker.characterClassManager.CurClass == RoleType.Scp0492 && ev.Player.GetTeam() != Team.SCP)
 			{
 				int r = plugin.Gen.Next(100);
-				Plugin.Debug($"Roll: {r}. Target: {plugin.InfectionChance}");
+				Log.Debug($"Roll: {r}. Target: {plugin.InfectionChance}");
 				if (r <= plugin.InfectionChance)
 				{
-					Plugin.Debug($"Infecting {ev.Player.nicknameSync.MyNick} ({ev.Player.characterClassManager.CurClass}");
+					Log.Debug($"Infecting {ev.Player.nicknameSync.MyNick} ({ev.Player.characterClassManager.CurClass}");
 					plugin.Functions.InfectPlayer(ev.Player);
 				}
 			}
