@@ -15,45 +15,46 @@ namespace SCP008
 		{
 			if (plugin.InfectedPlayers.Contains(player))
 			{
-				Plugin.Debug($"{player.nicknameSync.MyNick} already infected.");
+				Log.Debug($"{player.nicknameSync.MyNick} already infected.");
 				return;
 			}
 
 			if (player.characterClassManager.IsAnyScp())
 			{
-				Plugin.Debug($"{player.nicknameSync.MyNick} is an SCP.");
+				Log.Debug($"{player.nicknameSync.MyNick} is an SCP.");
 				return;
 			}
 			plugin.InfectedPlayers.Add(player);
 
-			Plugin.Debug($"{player.nicknameSync.MyNick} infected.");
+			Log.Debug($"{player.nicknameSync.MyNick} infected.");
 			plugin.Coroutines.Add(Timing.RunCoroutine(DoInfectionTimer(player), $"{player.characterClassManager.UserId}"));
 		}
 
 		private IEnumerator<float> DoInfectionTimer(ReferenceHub player)
 		{
-			Plugin.Debug($"Infection timer for {player.nicknameSync.MyNick} started.");
+			Log.Debug($"Infection timer for {player.nicknameSync.MyNick} started.");
 			for (int i = 0; i < plugin.InfectionLength; i++)
 			{
 				if (!plugin.InfectedPlayers.Contains(player))
 				{
-					Plugin.Debug($"{player.nicknameSync.MyNick} is no longer on infected list, halting timer.");
+					Log.Debug($"{player.nicknameSync.MyNick} is no longer on infected list, halting timer.");
 					yield break;
 				}
 
 				player.gameObject.GetComponent<Broadcast>().RpcClearElements();
-				player.Broadcast(1, $"You are infected with SCP-008. The infection will take over in {plugin.InfectionLength - i} seconds!");
+				player.Broadcast(1, $"You are infected with SCP-008. The infection will take over in {plugin.InfectionLength - i} seconds!", false);
 				yield return Timing.WaitForSeconds(1f);
 			}
 
 			GameObject gameObject = player.gameObject;
 			Vector3 pos = gameObject.transform.position;
 
+			player.inventory.ServerDropAll();
 			Timing.RunCoroutine(TurnIntoZombie(player, pos));
 
 			yield return Timing.WaitForSeconds(0.6f);
 			
-			foreach (ReferenceHub hub in EXILED.Plugin.GetHubs())
+			foreach (ReferenceHub hub in Player.GetHubs())
 				if (Vector3.Distance(hub.gameObject.transform.position, player.gameObject.transform.position) < 10f && hub.characterClassManager.IsHuman() && hub != player)
 					InfectPlayer(hub);
 			CurePlayer(player);
@@ -61,16 +62,13 @@ namespace SCP008
 		
 		public IEnumerator<float> TurnIntoZombie(ReferenceHub player, Vector3 position)
 		{
-			CurePlayer(player);
 			if (player.characterClassManager.CurClass == RoleType.Scp0492)
 			{
 				yield break;
 			}
 			yield return Timing.WaitForSeconds(0.3f);
-			CurePlayer(player);
 			player.characterClassManager.SetClassIDAdv(RoleType.Scp0492, false);
 			yield return Timing.WaitForSeconds(2.5f);
-			CurePlayer(player);
 			player.playerStats.health = player.playerStats.maxHP;
 			player.plyMovementSync.OverridePosition(position, player.gameObject.transform.rotation.y);
 			CurePlayer(player);
