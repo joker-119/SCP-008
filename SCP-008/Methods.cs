@@ -42,7 +42,7 @@ namespace SCP008
 				}
 
 				player.gameObject.GetComponent<Broadcast>().RpcClearElements();
-				player.Broadcast(1, $"You are infected with SCP-008. The infection will take over in {plugin.InfectionLength - i} seconds!");
+				player.Broadcast(1, plugin.InfectedMessage.Replace("%seconds", $"{plugin.InfectionLength - i}"));
 				yield return Timing.WaitForSeconds(1f);
 			}
 
