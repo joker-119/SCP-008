@@ -15,6 +15,7 @@ namespace SCP008
 		public float InfectionLength;
 		public float InfectionChance;
 		public bool TurnInfectedOnDeath;
+		public string InfectedMessage;
 		
 		public List<ReferenceHub> InfectedPlayers = new List<ReferenceHub>();
 		public List<CoroutineHandle> Coroutines = new List<CoroutineHandle>();
@@ -64,6 +65,7 @@ namespace SCP008
 			InfectionChance = Config.GetFloat("008_infection_chance", 40f);
 			InfectionLength = Config.GetFloat("008_infection_length", 30f);
 			TurnInfectedOnDeath = Config.GetBool("008_turn_on_death", true);
+			InfectedMessage = Config.GetString("008_infect_message", "You are infected with SCP-008. The infection will take over in %seconds seconds!");
 		}
 	}
 }
